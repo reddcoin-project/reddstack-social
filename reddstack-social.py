@@ -45,7 +45,7 @@ def getNetworks(name, hash):
     else:
         return json.dumps(record)
 
-while True:
+def run_sweep():
 
     all_names = getAllNames()
 
@@ -110,7 +110,12 @@ while True:
         else:
             log.error(all_names["error"])
 
-    log.info(" Sleeping 60 sec")
-
-    time.sleep(60)
+while True:
+    try:
+        run_sweep()
+    except Exception as e:
+        log.error ("Exception occured:\n%s" % e)
+    finally:
+        log.info(" Sleeping 60 sec")
+        time.sleep(60)
 
