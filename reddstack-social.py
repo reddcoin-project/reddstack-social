@@ -1,8 +1,19 @@
 import json
 import time
+import os
+import logging
+from logging.handlers import RotatingFileHandler
 from pymongo import MongoClient
 from blockstore_client import config, client as clientRS, schemas, parsing, user, storage, drivers
 log = config.log
+
+DEBUG = True
+logFileHandler = RotatingFileHandler("reddstack-social.log", maxBytes=10000000, backupCount=99)
+log_format = ('[%(asctime)s] [%(levelname)s] [%(module)s:%(lineno)d] (' + str(os.getpid()) + ') %(message)s' if DEBUG else '%(message)s')
+logfile_formatter = logging.Formatter(log_format)
+logFileHandler.setFormatter(logfile_formatter)
+log.addHandler(logFileHandler)
+
 # Setup blockstore connection
 conf = config.get_config()
 conf["network"] = "mainnet"
