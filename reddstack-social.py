@@ -111,11 +111,11 @@ def run_sweep():
                                                     queryNetwork = networkColls.find({net.encode('ascii') + ".username": uid}).count()
                                                     if queryNetwork == 0:
                                                         log.info("Need to insert record")
-                                                        addUser = {net: {"username": networksT[net]["username"], "proofURL": networksT[net]["proofURL"], "address": networksT[net]["address"]}}
+                                                        addUser = {net: {"username": networksT[net]["username"], "proofURL": networksT[net]["proofURL"], "address": networksT[net]["address"], "fingerprint":networksT[net]["fingerprint"]}}
                                                         result = networkColls.insert_one(addUser)
                                                     elif queryNetwork == 1:
                                                         log.info("Need to update record")
-                                                        result = networkColls.update_one({net:{"username": networksT[net]["username"]}},{'$set':{"proofURL": networksT[net]["proofURL"], "address": networksT[net]["address"]}})
+                                                        networkColls.update({net + '.username': networksT[net]["username"]},{'$set':{net + ".proofURL": networksT[net]["proofURL"], net + ".address": networksT[net]["address"], net + ".fingerprint":networksT[net]["fingerprint"]}})
             else:
                 log.error("Some other data")
         else:
