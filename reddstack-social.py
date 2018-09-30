@@ -115,10 +115,16 @@ def run_sweep():
                                                         result = networkColls.insert_one(addUser)
                                                         log.info(result)
                                                     elif queryNetwork == 1:
-                                                        log.info("Need to update record: %s" % networksT[net]["username"])
-                                                        updateUser = {net + '.username': networksT[net]["username"]},{'$set':{net + ".proofURL": networksT[net]["proofURL"], net + ".address": networksT[net]["address"], net + ".fingerprint":networksT[net]["fingerprint"]}}
-                                                        result = networkColls.update_one(updateUser,{ upsert: true })
-                                                        log.info(result)
+                                                        log.info("Need to update Network: %s with record: %s" % (net,networksT[net]["username"]))
+                                                        if networksT[net]["username"] != '':
+                                                            updateQuery = {net + '.username': networksT[net]["username"]}
+                                                            updateData = {'$set':{net + ".proofURL": networksT[net]["proofURL"], net + ".address": networksT[net]["address"], net + ".fingerprint":networksT[net]["fingerprint"]}}
+                                                            log.info(updateQuery)
+                                                            log.info(updateData)
+                                                            result = networkColls.update_one(updateQuery, updateData)
+                                                            log.info(result)
+                                                        else:
+                                                            log.info("Username empty")
             else:
                 log.error("Some other data")
         else:
