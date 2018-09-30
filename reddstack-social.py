@@ -28,7 +28,7 @@ networkColls = db.networks
 
 def getNameRecord(name):
     try:
-        record = clientRS.get_name_blockchain_record(user["name"])
+        record = clientRS.get_name_blockchain_record(name)
     except Exception as e:
         log.error(e)
         return None
@@ -113,9 +113,12 @@ def run_sweep():
                                                         log.info("Need to insert record")
                                                         addUser = {net: {"username": networksT[net]["username"], "proofURL": networksT[net]["proofURL"], "address": networksT[net]["address"], "fingerprint":networksT[net]["fingerprint"]}}
                                                         result = networkColls.insert_one(addUser)
+                                                        log.info(result)
                                                     elif queryNetwork == 1:
-                                                        log.info("Need to update record")
-                                                        networkColls.update({net + '.username': networksT[net]["username"]},{'$set':{net + ".proofURL": networksT[net]["proofURL"], net + ".address": networksT[net]["address"], net + ".fingerprint":networksT[net]["fingerprint"]}})
+                                                        log.info("Need to update record: %s" % networksT[net]["username"])
+                                                        updateUser = {net + '.username': networksT[net]["username"]},{'$set':{net + ".proofURL": networksT[net]["proofURL"], net + ".address": networksT[net]["address"], net + ".fingerprint":networksT[net]["fingerprint"]}}
+                                                        result = networkColls.update(updateUser)
+                                                        log.info(result)
             else:
                 log.error("Some other data")
         else:
