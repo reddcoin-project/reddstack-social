@@ -117,7 +117,7 @@ def run_sweep():
                                                     elif queryNetwork == 1:
                                                         log.info("Need to update record: %s" % networksT[net]["username"])
                                                         updateUser = {net + '.username': networksT[net]["username"]},{'$set':{net + ".proofURL": networksT[net]["proofURL"], net + ".address": networksT[net]["address"], net + ".fingerprint":networksT[net]["fingerprint"]}}
-                                                        result = networkColls.update(updateUser)
+                                                        result = networkColls.updateOne(updateUser)
                                                         log.info(result)
             else:
                 log.error("Some other data")
