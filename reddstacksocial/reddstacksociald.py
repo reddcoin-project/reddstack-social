@@ -12,7 +12,7 @@ for handler in log.handlers[:]:
     log.removeHandler(handler)
 
 DEBUG = True
-logPath = "./logs"
+logPath = "../logs"
 if not os.path.isdir(logPath):
     os.makedirs(logPath)
 logFileHandler = RotatingFileHandler(logPath + "/reddstack-social.log", maxBytes=10000000, backupCount=99)
@@ -131,12 +131,14 @@ def run_sweep():
         else:
             log.error(all_names["error"])
 
-while True:
-    try:
-        run_sweep()
-    except Exception as e:
-        log.error ("Exception occured:\n%s" % e)
-    finally:
-        log.info(" Sleeping 60 sec")
-        time.sleep(60)
+def run_reddstacksociald():
+    log.info("Starting Reddstack Social")
+    while True:
+        try:
+            run_sweep()
+        except Exception as e:
+            log.error ("Exception occured:\n%s" % e)
+        finally:
+            log.info(" Sleeping 60 sec")
+            time.sleep(60)
 
