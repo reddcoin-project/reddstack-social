@@ -7,8 +7,15 @@ from pymongo import MongoClient
 from blockstore_client import config, client as clientRS, schemas, parsing, user, storage, drivers
 log = config.log
 
+#Remove all logging handlers and pipe everything to file
+for handler in log.handlers[:]:
+    log.removeHandler(handler)
+
 DEBUG = True
-logFileHandler = RotatingFileHandler("reddstack-social.log", maxBytes=10000000, backupCount=99)
+logPath = "./logs"
+if not os.path.isdir(logPath):
+    os.makedirs(logPath)
+logFileHandler = RotatingFileHandler(logPath + "/reddstack-social.log", maxBytes=10000000, backupCount=99)
 log_format = ('[%(asctime)s] [%(levelname)s] [%(module)s:%(lineno)d] (' + str(os.getpid()) + ') %(message)s' if DEBUG else '%(message)s')
 logfile_formatter = logging.Formatter(log_format)
 logFileHandler.setFormatter(logfile_formatter)
