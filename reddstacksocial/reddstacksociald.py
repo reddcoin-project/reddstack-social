@@ -57,7 +57,6 @@ def getAllNames():
 def getNetworks(name, hash):
     try:
         record = clientRS.get_immutable(name, hash)
-        log.info(record)
     except Exception as e:
         log.error(e)
         return None
@@ -94,6 +93,8 @@ def run_sweep():
                         log.info('One User Added: {0} {1}'.format(result.inserted_id, user["name"]))
 
                     elif results == 1:
+                        # One matches, we can go ahead and add
+                        log.info(str(results) + " match(es) found in DB, updating.." + username[0])
 
                         # ,"networks":{"reddit":{"cryptognasher":"address"},"twitter":{"gnasher":"address"}}}
                         # get registered results
@@ -104,6 +105,7 @@ def run_sweep():
                             if user["value_hash"] is not None:  # no social data
                                 #print user["name"] + " " + user["value_hash"]
                                 # if different values, something has been updated
+                                # No matches, we can go ahead and add
                                 if storedHash != user["value_hash"]:
                                     log.info("Exactly " + str(results) + " match found in DB, updating " + username[0] + " if required..")
                                     log.info(user["name"] + " " + user["value_hash"])
@@ -132,7 +134,12 @@ def run_sweep():
                                                         updateUser = {net + '.username': networksT[net]["username"]}
                                                         updatePayload = {'$set':{net + ".proofURL": networksT[net]["proofURL"], net + ".address": networksT[net]["address"], net + ".fingerprint":networksT[net]["fingerprint"]}}
                                                         result = networkColls.update_one(updateUser, updatePayload, True)
-                                                        log.info(result)
+                                                        log.info("Updated {0} records.".format(result.modified_count))
+                                else:
+                                    # No matches, we can go ahead and add
+                                    log.info("Stored hash: {0} equal current hash: {1}. Skipping".format(storedHash,user['value_hash']))
+                            else:
+                                log.info("value_hash is None. Nothing to update")
 
                     endTime = time.time()
                     remainingTime = startTime + delayTime - endTime
@@ -145,13 +152,17 @@ def run_sweep():
             log.error(all_names["error"])
 
 def run_reddstacksociald():
-    log.info("Starting Reddstack Social")
+    log.info("\n\n**************************\n Starting Reddstack Social\n**************************\n")
     while True:
+        startTime = time.time()
         try:
             run_sweep()
         except Exception as e:
             log.error ("Exception occured:\n%s" % e)
         finally:
+            endTime = time.time()
+            processingTime = endTime - startTime
+            log.info(" Processing Time = {0}".format(processingTime))
             log.info(" Sleeping 60 sec")
             time.sleep(60)
 
