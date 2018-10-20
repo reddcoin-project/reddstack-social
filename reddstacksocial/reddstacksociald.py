@@ -21,6 +21,9 @@ logfile_formatter = logging.Formatter(log_format)
 logFileHandler.setFormatter(logfile_formatter)
 log.addHandler(logFileHandler)
 
+# processing delay
+delayTime = 10 # sec
+
 # Setup blockstore connection
 conf = config.get_config()
 conf["network"] = "mainnet"
@@ -72,6 +75,9 @@ def run_sweep():
         if "error" not in all_names:
             if "bitcoind_blocks" not in all_names:
                 for each in all_names:
+                    # rate limit our queries
+                    startTime = time.time()
+
                     log.info("Checking: " + str(each))
                     user = all_names[each]
                     # add a record for every user
@@ -127,6 +133,12 @@ def run_sweep():
                                                         updatePayload = {'$set':{net + ".proofURL": networksT[net]["proofURL"], net + ".address": networksT[net]["address"], net + ".fingerprint":networksT[net]["fingerprint"]}}
                                                         result = networkColls.update_one(updateUser, updatePayload, True)
                                                         log.info(result)
+
+                    endTime = time.time()
+                    remainingTime = startTime + delayTime - endTime
+                    if remainingTime > 0:
+                        log.info("Delaying next query {0} secs".format(remainingTime))
+                        time.sleep(remainingTime)
             else:
                 log.error("Some other data")
         else:
