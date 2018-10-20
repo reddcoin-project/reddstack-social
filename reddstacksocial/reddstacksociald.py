@@ -22,7 +22,7 @@ logFileHandler.setFormatter(logfile_formatter)
 log.addHandler(logFileHandler)
 
 # processing delay
-delayTime = 10 # sec
+delayTime = 1 # sec
 
 # Setup blockstore connection
 conf = config.get_config()
