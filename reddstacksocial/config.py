@@ -22,6 +22,9 @@ def get_working_dir():
     return working_dir
 
 
+def get_pid_filename():
+    return 'reddstacksocial'
+
 logPath = get_working_dir()
 log = logging.getLogger()
 if len(log.handlers) == 0:
