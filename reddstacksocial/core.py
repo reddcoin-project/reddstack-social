@@ -20,7 +20,7 @@ conf = bc_config.get_config()
 conf["network"] = "mainnet"
 proxyRS = client.session(conf, conf['server'], conf['port'])
 
-clientDB = MongoClient('localhost', 27017)
+clientDB = MongoClient('localhost', 27017, connect = False)
 db = clientDB['socialNetworks']
 # collections
 reddids_colls = db.reddids
