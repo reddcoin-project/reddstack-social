@@ -104,3 +104,4 @@ venv.bak/
 .mypy_cache/
 reddstack-social.log*
 /.vscode/
+/.idea/
