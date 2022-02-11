@@ -24,7 +24,7 @@ pyreddcointools==1.1.43
 python-bitcoinrpc==0.1
 requests==2.19.1
 six==1.11.0
-Twisted==18.7.0
+Twisted==22.1.0
 txJSON-RPC==0.5
 urllib3==1.23
 utilitybelt==0.2.6
